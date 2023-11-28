@@ -13,6 +13,9 @@ Papers/
 # ignore the exported abstracts
 Exported_Abstracts/
 
+# ignore archive
+Archive/
+
 #ignore R-related bumf
 .Rproj.user
 .Rhistory
