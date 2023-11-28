@@ -14,6 +14,7 @@ When published, a link to the paper will be included here.
 
 
 ## Project Structure
+```
 ├───Datasets
 │   ├───Raw_Datasets
 │   └───Final_Clean_Dataset
@@ -27,6 +28,7 @@ When published, a link to the paper will be included here.
 .gitignore
 Analysis.R
 Nuke and Restart.R
+```
 
 ## Code Documentation
 A considerable change in the method has led to a re-write of the analysis.
