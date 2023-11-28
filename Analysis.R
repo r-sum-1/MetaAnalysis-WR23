@@ -158,7 +158,7 @@ outliers <- dmetar::find.outliers(m.gen)
 # Influence
 m.gen.inf <- InfluenceAnalysis(m.bin, random = TRUE)
 
-jpg("baujat.jpg", units="in", width=7, height=5, res=300)
+jpg("Outputs/baujat.jpg", units="in", width=7, height=5, res=300)
 
 plot(m.gen.inf, "baujat", xmin=20, ymin=10, cex.studlab=10, studlab=TRUE) 
 
@@ -167,7 +167,7 @@ dev.off()
 
 plot(m.gen.inf, "influence")
 
-jpg("leave_one_out.jpg", units="in", width=12, height=15, res=300)
+jpg("Outputs/leave_one_out.jpg", units="in", width=12, height=15, res=300)
 plot(m.gen.inf, "es")
 dev.off()
 
@@ -179,6 +179,9 @@ plot(m.gen.inf, "i2")
 ##################################
 # Funnel Plot
 # Define fill colors for contour
+
+jpeg("Outputs/funnel.jpg", width=5*300, height=7*300, res=300)
+
 col.contour = c("gray75", "gray85", "gray95")
 
 # Generate funnel plot (we do not include study labels here)
@@ -195,6 +198,7 @@ legend(x = 3.7, y = -0.05,cex = 0.7,
 
 # Add a title
 title("Contour-Enhanced Funnel Plot")
+dev.off()
 
 # Egger's Regression Test
 print("Eggers Test") 
@@ -211,7 +215,7 @@ weightfunct(effect = df_filt$es,v = df_filt$var)
 
 
 
-save_filename <- paste0("MAINforest_plot.jpg") 
+save_filename <- paste0("Outputs/MAINforest_plot.jpg") 
 
 height <- 2 + length(m.gen$event.e) * 0.25
 
@@ -521,7 +525,7 @@ filt_appended <- final_appended %>% filter(Model=="Random")
 
 write.csv(final_appended, "Outputs/Tables/final_appended.csv")
 
-write.csv(filt_appended, "filt_appended.csv")
+write.csv(filt_appended, "Outputs/Tables/filt_appended.csv")
 
 
 
