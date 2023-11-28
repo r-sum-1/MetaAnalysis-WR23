@@ -701,7 +701,6 @@ reg4 <- rma(yi = es,
 
 
 
-reg4a
 
 summary(reg4)
 
@@ -715,7 +714,7 @@ reg_table <- data.frame(b = round(reg$b, 3),
                         ci.lb = round(reg$ci.lb, 3), 
                         ci.ub = round(reg$ci.ub, 3))
 
-reg_table
+reg_table <- round(reg_table, 2)
 
 reg_table <- reg_table %>% mutate(sig = case_when( pval < 0.001 ~ "***",
                                                    pval < 0.01 ~ "**",
@@ -723,6 +722,9 @@ reg_table <- reg_table %>% mutate(sig = case_when( pval < 0.001 ~ "***",
                                                    pval < 0.1 ~ ".",
                                                    TRUE ~ ""))
 
+
+
+write.csv(reg_table, "Outputs/Tables/reg_gender.csv")
 
 clipr::write_clip(reg_table)
 
@@ -752,11 +754,14 @@ reg_table1 <- data.frame(b = round(focus_reg$b, 3),
                          ci.ub = round(focus_reg$ci.ub, 3))
 
 
+reg_table1 <- round(reg_table1, 2)
+
 reg_table1 <- reg_table1 %>% mutate(sig = case_when( pval < 0.001 ~ "***",
                                                      pval < 0.01 ~ "**",
                                                      pval < 0.05 ~ "*",
                                                      pval < 0.1 ~ ".",
                                                      TRUE ~ ""))
 
+write.csv(reg_table, "Outputs/Tables/reg_focus.csv")
 
 clipr::write_clip(reg_table1)
