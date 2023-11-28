@@ -764,4 +764,5 @@ reg_table1 <- reg_table1 %>% mutate(sig = case_when( pval < 0.001 ~ "***",
 
 write.csv(reg_table, "Outputs/Tables/reg_focus.csv")
 
-clipr::write_clip(reg_table1)
+
+
