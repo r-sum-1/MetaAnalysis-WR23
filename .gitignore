@@ -1,0 +1,20 @@
+# ignore any datasets
+Datasets/
+
+# ignore any outputs
+Outputs/
+
+# ignore the report folder
+Report/
+
+# ignore the papers folder
+Papers/
+
+# ignore the exported abstracts
+Exported_Abstracts/
+
+#ignore R-related bumf
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
