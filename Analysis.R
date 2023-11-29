@@ -25,8 +25,6 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 
 ######    Import data ##
-
-
 setwd(dirname(getSourceEditorContext()$path))
 
 df <- as.data.frame(read_excel("Datasets/Raw_Datasets/data amended.xlsx", sheet = "data_updated"))
@@ -48,10 +46,6 @@ df[, sapply(df, class) == 'character'] <- sapply(df[, sapply(df, class) == 'char
 df$Casework <- gsub("Probation", "Yes", df$Casework)
 
 # =============== Some Housekeeping ====================
-
-
-
-
 df$study_length_cat <- df %>% 
   mutate(length = case_when(Span_Months < 7 ~ "0-6 Months",
                             Span_Months > 6 & Span_Months < 13   ~ "7-12 Months",
@@ -84,25 +78,19 @@ df$location_therapy <- df %>%
 # now create a group for community/institution/gendered... just combine the columns!
 df$pathway_gendered <- paste(df$Gendered_Groups, df$Pathway)
 df$location_gendered <- paste(df$Gendered_Groups, df$location)
-
 df$location_length <- paste(df$study_length_cat, df$location)
 df$Gendered_Pathways_pathway <- paste(df$`Gendered Pathways`, df$Pathway)
-
 df$focus_location <- paste(df$location, df$focus)
-
 
 
 # combine studies together where there are multiple for each - 
 # 1 str_split in the " _" to separate it out... we only want the first bit.
-
 stringr::str_split_fixed(df$author,  ' -', 2)[,1]
 
 
 # --------------------------------------------------------
 df[, c("pre.t", "pre.c", "post.tp", "post.cp")] <- sapply(df[, c("pre.t", "pre.c", "post.tp", "post.cp")], as.numeric)
 df[, c("pre.t", "pre.c", "post.tp", "post.cp")] <- round(df[, c("pre.t", "pre.c", "post.tp", "post.cp")], 0)
-
-
 # pre.t     number of subjects in treatment group
 # pre.c     number of subjects in control group
 
@@ -120,12 +108,9 @@ df[, c("pre.t", "pre.c", "post.tp", "post.cp")] <- round(df[, c("pre.t", "pre.c"
 df$post.cn <- df$pre.c - df$post.cp 
 df$post.tn <- df$pre.t - df$post.tp
 
-
 #filter for empty
 #filter filter
 df <- df %>% filter(!is.na(pre.t), !is.na(pre.c), !is.na(post.tp), !is.na(post.cp))
-
-
 
 # Assign to char 
 df$Filter_Arrest <- as.character(df$Filter_Arrest)
@@ -136,7 +121,6 @@ df$Filter_RTJ <- as.character(df$Filter_RTJ)
 #assign to factors
 df$focus <- as.factor(df$focus)
 df$location <- as.factor(df$location)
-
 
 
 
@@ -160,7 +144,6 @@ for(i in 1:nrow(df)) {       # for-loop over rows
   
   
 }
-
 
 
 # This is a botch
@@ -209,16 +192,11 @@ m.bin <- metabin(event.e = post.tp,
                  prediction = TRUE,
                  title = "")
 
-
-
-
-
 order <- data.frame(m.bin$studlab, exp(m.bin$TE))
 
 order <- order %>% arrange(desc(exp.m.bin.TE.))
 
 m.bin$studlab
-
 
 summary(m.bin)
 
@@ -232,7 +210,6 @@ m.bin_update <- update.meta(m.bin, method.tau = "REML")
 exp(m.bin_update$TE.random)
 m.bin_update$tau2
 
-
 m.bin_or <- update.meta(m.bin, sm = "OR")
 m.bin_or
 
@@ -244,13 +221,7 @@ m.gen <- update.meta(m.bin_or, prediction = TRUE)
 m.gen_sum <- summary(m.gen)
 m.gen
 
-
-
-
-
 ########## FROM HERE YOU CAN JUMP STRAIGHT TO LOOPING
-
-
 # Influence
 m.gen.inf <- InfluenceAnalysis(m.bin, random = TRUE)
 
@@ -269,8 +240,6 @@ dev.off()
 
 
 plot(m.gen.inf, "i2")
-
-
 
 plot(m.gen.inf, "i2")
 
@@ -410,7 +379,6 @@ for (sms in c("All", "Higher Quality")){
     #restore master filt
     if (sms == "Higher Quality") {
       df_filt <- df_filt %>% filter(SMS > 3)}
-    
     # ----------------------------------------------------------------    
     #filter where other < 5 studies...
     lessthan5 <- as.data.frame(table(df_filt[[subgroup]]))
@@ -425,8 +393,6 @@ for (sms in c("All", "Higher Quality")){
     
     df_filt <- df_filt %>% filter(!!sym(subgroup) %in% lessthan5)
     
-    
-    
     # ----------------------------------------------------------------
     #filter where not other
     lessthan5 <- as.data.frame(table(df_filt[[subgroup]]))
@@ -434,11 +400,10 @@ for (sms in c("All", "Higher Quality")){
     if ("Other" %in% c(lessthan5$Var1)){
       df_filt <- df_filt %>% filter(!!sym(subgroup) != "Other")
     }
-    # ----------------------------------------------------------------
     
+    # ----------------------------------------------------------------
     if (subgroup == "GOBEIL_GEND_HQS_COMP") {
       df_filt <- df %>% filter(!is.na(GOBEIL_GEND_HQS_COMP))
-      
       
       m.bin_g <- metabin(event.e = post.tp,
                          n.e = pre.t,
@@ -540,8 +505,6 @@ for (sms in c("All", "Higher Quality")){
     TE_rand <- round(exp(sub_g$TE.random.w), 2)
     TE_ci_rand <- paste0("[", round(exp(sub_g$lower.random.w), 2), ";", round(exp(sub_g$upper.random.w), 2), "]")
     
-    
-    
     n.e <- sub_g$n.e.w
     n.c <- sub_g$n.c.w
     
@@ -554,7 +517,6 @@ for (sms in c("All", "Higher Quality")){
     Q.between <- round(sub_g$Q.b.random, 2)
     Q.between.pval <- sub_g$pval.Q.b.random
     
-    
     table <- as.data.frame(cbind(k, n.e, n.c, TE_fixed, TE_ci_fixed, TE_rand, TE_ci_rand, I2, I2_ci, Q, Q.pval))
     
     #insert new row, and then insert the "between" stats
@@ -565,8 +527,7 @@ for (sms in c("All", "Higher Quality")){
     
     table[nrow(table), 10] <- Q.between
     table[nrow(table), 11] <- Q.between.pval
-    
-    
+  
     table$Q.pval <- as.double(table$Q.pval)
     
     first_row <- c(sub_g$k.all, sum(sub_g$n.e), sum(sub_g$n.c), round(exp(sub_g$TE.fixed), 2), 
@@ -592,24 +553,19 @@ for (sms in c("All", "Higher Quality")){
     subgroups <-rownames(table)
     
     rownames(table) <- NULL
-    
-    table
-    
+
     table <- cbind(subgroups, table)
-    
     
     table[1,1] <- "All"
     
     table <- as.data.frame(sapply(table, gsub, pattern = "NA", replacement = "", fixed = TRUE))
-    
     
     # ===================================
     emptyrow <- head(table, 1)
     emptyrow[1,] <- NA
     
     table <- rbind(emptyrow, table)
-    
-    
+
     #insert column with just one 
     groups_col <- c(subgroup, rep("", nrow(table)-1))
     filt_col <- c(sms, rep("", nrow(table)-1))
@@ -625,8 +581,7 @@ for (sms in c("All", "Higher Quality")){
   }
 }
 
-
-# fuck it... null the Q for the individual groups...
+# if we want to... null the Q for the individual groups...
 # 
 #out_table[out_table$subgroups != "Between" & !is.na(out_table$subgroups), "Q"] <- ""
 #out_table[is.na(out_table)] <- ""
@@ -640,24 +595,15 @@ write.csv(out_table, "Outputs/Tables/out_table.csv")
 # Some regressions
 library(PerformanceAnalytics)
 
-
 df_reg <- df_filt
-
-
 df_reg$Gendered_Groups <- as.character(df_reg$Gendered_Groups)
-
-
 df_reg$Gendered_Groups <- relevel(factor(df_reg$Gendered_Groups), ref = "Neutral")
 df_reg$Pathway <-  relevel(factor(df_reg$Pathway), ref = "Community")
 df_reg$SMS <-  relevel(factor(df_reg$SMS), ref = "3")
 
-
 df_reg <- df_reg %>% filter(!is.infinite(es))
-
 df_reg$Gendered_Groups <- as.factor(df_reg$Gendered_Groups)
-
 df_reg$length_followup_months <- as.numeric(df_reg$length_followup_months)
-
 
 # ===================================
 
@@ -691,7 +637,6 @@ reg3a <- rma(yi = es,
              mods = ~ Gendered_Groups + Pathway  + Outcome)
 
 
-
 reg4 <- rma(yi = es, 
             sei = se, 
             data = df_reg, 
@@ -703,9 +648,6 @@ reg4 <- rma(yi = es,
             data = df_reg, 
             method = "ML",
             mods = ~ Gendered_Groups + Pathway  + length_followup_months + Outcome + SMS)
-
-
-
 
 summary(reg4)
 
@@ -727,16 +669,12 @@ reg_table <- reg_table %>% mutate(sig = case_when( pval < 0.001 ~ "***",
                                                    pval < 0.1 ~ ".",
                                                    TRUE ~ ""))
 
-
-
 write.csv(reg_table, "Outputs/Tables/reg_gender.csv")
 
 clipr::write_clip(reg_table)
 
 # ===================================
 #focus of studies - meta-regressions
-
-
 focus_reg <- rma(yi = es, 
                  sei = se, 
                  data = df_reg, 
@@ -749,7 +687,6 @@ focus_reg <- rma(yi = es,
                  method = "ML",
                  mods = ~ Gendered_Groups + focus  + length_followup_months + Outcome + SMS)
 
-
 # extract the table and rebuild in APA format....
 reg_table1 <- data.frame(b = round(focus_reg$b, 3), 
                          se = round(focus_reg$se, 3), 
@@ -757,7 +694,6 @@ reg_table1 <- data.frame(b = round(focus_reg$b, 3),
                          pval = round(focus_reg$pval, 3), 
                          ci.lb = round(focus_reg$ci.lb, 3), 
                          ci.ub = round(focus_reg$ci.ub, 3))
-
 
 reg_table1 <- round(reg_table1, 2)
 
@@ -768,6 +704,3 @@ reg_table1 <- reg_table1 %>% mutate(sig = case_when( pval < 0.001 ~ "***",
                                                      TRUE ~ ""))
 
 write.csv(reg_table, "Outputs/Tables/reg_focus.csv")
-
-
-
