@@ -399,7 +399,7 @@ dev.off()
 # Create subgroups and loop thgrough the analysis... create the output table first with predefined columns...
 columns <- c("SMS", "groups_col", "subgroups" , "k", "n.e", "n.c", "TE_fixed", "TE_ci_fixed", "TE_rand", "TE_ci_rand", "I2", "I2_ci", "Q")
 out_table <- data.frame(matrix(ncol = length(columns), nrow = 0))
-
+out_outliers <- list()
 df_filt_master <- df_filt
 
 
@@ -473,11 +473,7 @@ for (sms in c("All", "Higher Quality")){
       
     }
     
-    
-    
-    
-    
-    
+    # a mess of a conditional statement, the update.meta function has to be declared manually...
     if (subgroup == "location"){sub_g <- update.meta(m.bin_g, subgroup = location)
     } else if (subgroup == "Gendered_Groups"){sub_g <- update.meta(m.bin_g, subgroup = Gendered_Groups)
     } else if (subgroup == "focus"){sub_g <- update.meta(m.bin_g, subgroup = focus)
@@ -499,6 +495,17 @@ for (sms in c("All", "Higher Quality")){
     } else if (subgroup == "Gendered_Pathways_pathway"){sub_g <- update.meta(m.bin_g, subgroup = `Gendered_Pathways_pathway`)
     } else if (subgroup == "focus_location"){sub_g <- update.meta(m.bin_g, subgroup = focus_location)
     }
+    
+    #identify outliers
+    # so far, no outliers in any of the groupings...
+    # conditional TODO... 
+    outliers <- NULL
+    
+    tryCatch({outliers <- find.outliers(sub_g)
+      }, error=function(e){cat("\n No outliers - ", subgroup)})
+
+    if (!is.null(outliers)){out_outliers <- c(out_outliers, outliers)}
+    
     
     filename <- paste0("Outputs/subg_forest/", sms, " ", subgroup, ".jpg")
     
