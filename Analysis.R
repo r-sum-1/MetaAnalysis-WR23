@@ -569,8 +569,6 @@ for (sms in c("All", "Higher Quality")){
     
     table$Q.pval <- as.double(table$Q.pval)
     
-    table
-    
     first_row <- c(sub_g$k.all, sum(sub_g$n.e), sum(sub_g$n.c), round(exp(sub_g$TE.fixed), 2), 
                    paste0("[", round(exp(sub_g$lower.common), 2),"; ",  round(exp(sub_g$upper.common), 2), "]"),
                    round(exp(sub_g$TE.random), 2),
