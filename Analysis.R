@@ -1,7 +1,9 @@
 # R version 4.2.1 (2022-06-23 ucrt) -- "Funny-Looking Kid"
 # Rstudio Version "2023.06.1+524" - "Mountain Hydrangea"
+library(devtools)
+Sys.unsetenv("GITHUB_PAT")
 
-#remotes::install_github("MathiasHarrer/dmetar")
+remotes::install_github("MathiasHarrer/dmetar")
 
 
 ######    Load packages
@@ -223,7 +225,7 @@ m.gen
 
 ########## FROM HERE YOU CAN JUMP STRAIGHT TO LOOPING
 # Influence
-m.gen.inf <- InfluenceAnalysis(m.bin, random = TRUE)
+m.gen.inf <- dmetar::InfluenceAnalysis(m.bin, random = TRUE)
 
 jpeg("Outputs/baujat.jpg", units="in", width=7, height=5, res=300)
 
@@ -238,10 +240,9 @@ jpeg("Outputs/leave_one_out.jpg", units="in", width=12, height=15, res=300)
 plot(m.gen.inf, "es")
 dev.off()
 
-
+jpeg("Outputs/leave_one_out_i2.jpg", units="in", width=12, height=15, res=300)
 plot(m.gen.inf, "i2")
-
-plot(m.gen.inf, "i2")
+dev.off()
 
 ##################################
 # Funnel Plot
@@ -275,7 +276,9 @@ summary(eggs)
 
 #################### TEST FOR ACTUAL PUBLICATION BIAS
 
-weightfunct(effect = df_filt$es,v = df_filt$var)
+
+#one inf in there... 
+weightfunct(effect = df_filt[!is.infinite(df_filt$es),]$es, v = df_filt[!is.infinite(df_filt$es),]$var)
 
 ##################################
 #  Forest Plots
@@ -283,7 +286,6 @@ weightfunct(effect = df_filt$es,v = df_filt$var)
 save_filename <- paste0("Outputs/MAINforest_plot.jpg") 
 
 height <- 2 + length(m.gen$event.e) * 0.25
-
 height <- height * 300
 
 jpeg(save_filename, width=12*300, height=height, res=300)
@@ -296,7 +298,7 @@ forest <- forest.meta(m.gen,
                       print.I2 = TRUE,
                       print.Q = TRUE,
                       prediction = TRUE,
-                      rightcols = c("effect", "ci", "w.fixed","w.random", "focus", "Gendered", "location"),
+                      rightcols = c("effect", "ci", "w.fixed","w.random", "focus", "Gendered_Groups", "location"),
                       rightlabs = c("effect", "ci", "w.fixed","w.random", "Study Focus", "Gendered", "Location"),
                       leftcols = c("studlab", "n.e", "n.c"),
                       colgap.left = unit(1, "cm"),

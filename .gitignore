@@ -21,3 +21,6 @@ Archive/
 .Rhistory
 .RData
 .Ruserdata
+
+#ignore documents
+Documents/
